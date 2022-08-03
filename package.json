@@ -2,7 +2,8 @@
   "name": "@hexlet/code",
   "version": "1.0.0",
   "description": "RSS Feed Reader",
-  "main": "./src/app.js",
+  "main": "src/index.js",
+  "type": "module",
   "scripts": {
     "test": "NODE_OPTIONS=--experimental-vm-modules npx jest --colors"
   },
@@ -30,6 +31,11 @@
     "webpack-dev-server": "^4.9.3"
   },
   "dependencies": {
-    "bootstrap": "^5.2.0"
+    "axios": "^0.27.2",
+    "bootstrap": "^5.2.0",
+    "i18next": "^21.8.16",
+    "lodash": "^4.17.21",
+    "on-change": "^4.0.1",
+    "yup": "^0.32.11"
   }
 }
