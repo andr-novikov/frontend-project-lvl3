@@ -31,14 +31,8 @@ jobs:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
 
-      - name: npm install, build
-        # Install and build project
-        run: |
-          make install
-          make build
-        # Add environment variables
-        env:
-          CI: true
+      - name: npm install
+        run: make install
 
       - name: Run linter
         run: make lint
