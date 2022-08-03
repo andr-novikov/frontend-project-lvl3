@@ -1,13 +1,8 @@
-const path = require('path');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
+import HtmlWebpackPlugin from 'html-webpack-plugin';
 
-module.exports = {
+export default {
   mode: process.env.NODE_ENV || 'development',
   entry: './src/index.js',
-  output: {
-    filename: 'main.js',
-    path: path.resolve(__dirname, 'dist'),
-  },
   module: {
     rules: [
       {
