@@ -1,8 +1,5 @@
 // @ts-check
 
-import './style.css';
-import 'bootstrap';
-import app from './app.js';
+import runApp from './init.js';
 
-app();
-console.log('Hello!');
+runApp();
