@@ -1,9 +1,6 @@
 // @ts-check
 
-export default (state, i18nInstance, elements) => {
-  console.log('render tut\'')
-  console.log('elements =', elements)
-
+export const render = (state, i18nInstance, elements) => {
   const {
     header,
     paragraph,
@@ -19,4 +16,24 @@ export default (state, i18nInstance, elements) => {
   example.textContent = i18nInstance.t('example');
   mainBtn.textContent = i18nInstance.t('btn');
   lngBtn.textContent = i18nInstance.t('lngBtn');
+};
+
+export const renderForm = (state, i18nInstance, elements) => {
+  const { input } = elements;
+  const { feedback } = elements.textElements;
+
+  if (!state.form.valid) {
+    feedback.textContent = 'Ресурс не содержит валидный RSS';
+    feedback.classList.remove('text-success');
+    feedback.classList.add('text-danger');
+    input.classList.add('is-invalid');
+    input.focus();
+  } else {
+    feedback.textContent = 'RSS успешно загружен';
+    feedback.classList.add('text-success');
+    feedback.classList.remove('text-danger');
+    input.classList.remove('is-invalid');
+    input.value = '';
+    input.focus();
+  }
 };

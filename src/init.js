@@ -4,7 +4,7 @@ import i18next from 'i18next';
 import onChange from 'on-change';
 import { string } from 'yup';
 import resources from './locales/index.js';
-import render from './render.js';
+import { render, renderForm } from './render.js';
 
 export default async () => {
   const defaultLanguage = 'ru';
@@ -55,23 +55,9 @@ export default async () => {
         i18nInstance.changeLanguage(value).then(() => render(watchedState, i18nInstance, elements));
         break;
       case 'form.data.url': {
-        // validation
         const schema = string().url();
-        const valid = await schema.isValid(value);
-        if (!valid) {
-          elements.textElements.feedback.textContent = 'Ресурс не содержит валидный RSS';
-          elements.textElements.feedback.classList.remove('text-success');
-          elements.textElements.feedback.classList.add('text-danger');
-          elements.input.classList.add('is-invalid');
-          elements.input.focus();
-        } else {
-          elements.textElements.feedback.textContent = 'RSS успешно загружен';
-          elements.textElements.feedback.classList.add('text-success');
-          elements.textElements.feedback.classList.remove('text-danger');
-          elements.input.classList.remove('is-invalid');
-          elements.input.value = '';
-          elements.input.focus();
-        }
+        watchedState.form.valid = await schema.isValid(value);
+        renderForm(watchedState, i18nInstance, elements);
         break;
       }
       default:
@@ -88,47 +74,10 @@ export default async () => {
     watchedState.form.data.url = url;
   });
 
-  const changeLng = (e) => {
+  const changeLng = () => {
     const newLng = watchedState.language === 'ru' ? 'en' : 'ru';
     watchedState.language = newLng;
   };
 
   elements.lngBtn.addEventListener('click', changeLng);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  // const watchedState = onChange(state, (path, value) => {
-  //   switch (path) {
-  //     case 'lng': i18nInstance.changeLanguage(value)
-  // .then(() => render(container, watchedState, i18nInstance));
-  //       break;
-
-  //     case 'clicksCount': render(container, watchedState, i18nInstance);
-  //       break;
-
-  //     default:
-  //       break;
-  //   }
-  // });
-
-  // render(container, watchedState, i18nInstance);
 };
-
-// render {
-//   btn.textContent = i18nInstance.t(`languages.${lng}`);
-// }
