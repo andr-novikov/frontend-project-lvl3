@@ -1,4 +1,4 @@
-# RSS Feed Reader
+### RSS Feed Reader - on development stage
 
 [![Actions Status](https://github.com/andr-novikov/frontend-project-lvl3/workflows/hexlet-check/badge.svg)](https://github.com/andr-novikov/frontend-project-lvl3/actions)
 [![Maintainability](https://api.codeclimate.com/v1/badges/d416924d160bc30be9bb/maintainability)](https://codeclimate.com/github/andr-novikov/frontend-project-lvl3/maintainability)
