@@ -3,7 +3,7 @@ export default {
     header: 'RSS агрегатор',
     paragraph: 'Начните читать RSS сегодня! Это легко, это красиво.',
     label: 'Ссылка RSS',
-    example: 'Пример: https://httpbin.org/xml, https://ru.hexlet.io/lessons.rss, https://www.kommersant.ru/RSS/main.xml, http://www.ixbt.com/export/articles.rss',
+    example: 'Пример: https://ru.hexlet.io/lessons.rss, https://www.kommersant.ru/RSS/main.xml, http://www.ixbt.com/export/articles.rss',
     btnSubmit: 'Добавить',
     lngBtn: 'en',
     state: {
