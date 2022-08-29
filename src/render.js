@@ -169,8 +169,8 @@ export const render = (elements, i18nInstance, state) => {
 };
 
 export const stateRender = (elements, i18nInstance, state) => (path, value) => {
-        console.log('pathRender =', path)
-        console.log('valueRender =', value)
+  // console.log('pathRender =', path);
+  // console.log('valueRender =', value);
   switch (path) {
     case 'language':
       render(elements, i18nInstance, state);

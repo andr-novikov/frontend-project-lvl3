@@ -2,7 +2,6 @@
 
 import i18next from 'i18next';
 import onChange from 'on-change';
-// import { string, setLocale } from 'yup';
 import axios from 'axios';
 import _ from 'lodash';
 import resources from './locales/index.js';
@@ -58,90 +57,11 @@ export default async () => {
   const watchedState = onChange(state, stateRender(elements, i18nInstance, state));
   render(elements, i18nInstance, state);
 
-const temp22 = `"<title>Новые уроки на Хекслете</title>
-<description>Практические уроки по программированию</description>
-<link>https://ru.hexlet.io/</link>
-<webMaster>info@hexlet.io</webMaster>
-<item>
-  <title>XOR / Теория множеств</title>
-  <guid isPermaLink=\"false\">2889</guid>
-  <link>https://ru.hexlet.io/courses/set-theory/lessons/xor/theory_unit</link>
-  <description>Цель: Одна из шестнадцати возможных бинарных операций над булевыми операндами</description>
-  <pubDate>Wed, 24 Aug 2022 09:59:23 +0000</pubDate>
-</item>
-<item>
-  <title>Закон Де Моргана / Теория множеств</title>
-  <guid isPermaLink=\"false\">2887</guid>
-  <link>https://ru.hexlet.io/courses/set-theory/lessons/de_morgan/theory_unit</link>
-  <description>Цель: Изучим два условия, которые задаются в законе Де Моргана</description>
-  <pubDate>Tue, 23 Aug 2022 07:55:53 +0000</pubDate>
-</item>
-<item>
-  <title>Хуки useCallback и useMemo / JS: React Hooks</title>
-  <guid isPermaLink=\"false\">2907</guid>
-  <link>https://ru.hexlet.io/courses/js-react-hooks/lessons/use-callback/theory_unit</link>
-  <description>Цель: Научиться создавать мемоизированные значения</description>
-  <pubDate>Fri, 19 Aug 2022 14:26:14 +0000</pubDate>
-</item>
-<item>
-  <title>Непересекающиеся множества / Теория множеств</title>
-  <guid isPermaLink=\"false\">2886</guid>
-  <link>https://ru.hexlet.io/courses/set-theory/lessons/disjoint/theory_unit</link>
-  <description>Цель: Узнаем особенности работы с непересекающимися множествами</description>
-  <pubDate>Thu, 18 Aug 2022 13:22:35 +0000</pubDate>
-</item>
-<item>
-  <title>Разность множеств / Теория множеств</title>
-  <guid isPermaLink=\"false\">2885</guid>
-  <link>https://ru.hexlet.io/courses/set-theory/lessons/difference/theory_unit</link>
-  <description>Цель: Разберемся, что такое разность множеств, и как ее использовать</description>
-  <pubDate>Thu, 18 Aug 2022 13:01:24 +0000</pubDate>
-</item>
-<item>
-  <title>Дополнение / Теория множеств</title>
-  <guid isPermaLink=\"false\">2884</guid>
-  <link>https://ru.hexlet.io/courses/set-theory/lessons/complement/theory_unit</link>
-  <description>Цель: Что такое дополнение, и когда его использовать</description>
-  <pubDate>Thu, 18 Aug 2022 08:19:21 +0000</pubDate>
-</item>
-<item>
-  <title>Пересечение / Теория множеств</title>
-  <guid isPermaLink=\"false\">2883</guid>
-  <link>https://ru.hexlet.io/courses/set-theory/lessons/intesect/theory_unit</link>
-  <description>Цель: Что такое пересечение, и когда его использовать</description>
-  <pubDate>Thu, 18 Aug 2022 07:21:50 +0000</pubDate>
-</item>
-<item>
-  <title>Объединение / Теория множеств</title>
-  <guid isPermaLink=\"false\">2882</guid>
-  <link>https://ru.hexlet.io/courses/set-theory/lessons/union/theory_unit</link>
-  <description>Цель: Что такое объединение и как оно связано с союзом «или»</description>
-  <pubDate>Thu, 18 Aug 2022 07:04:34 +0000</pubDate>
-</item>
-<item>
-  <title>ПДНФ и ПКНФ / Введение в математическую логику</title>
-  <guid isPermaLink=\"false\">2801</guid>
-  <link>https://ru.hexlet.io/courses/logic/lessons/pdnf_and_pcnf/theory_unit</link>
-  <description>Цель: Рассмотреть полную дизъюнктивную нормальную форму (ПДНФ) и полную конъюктивную нормальную форму (ПКНФ).</description>
-  <pubDate>Thu, 18 Aug 2022 06:44:53 +0000</pubDate>
-</item>
-<item>
-  <title>Нотации / Теория множеств</title>
-  <guid isPermaLink=\"false\">2881</guid>
-  <link>https://ru.hexlet.io/courses/set-theory/lessons/symbols/theory_unit</link>
-  <description>Цель: Изучаем символы и основные формулы</description>
-  <pubDate>Wed, 17 Aug 2022 17:57:40 +0000</pubDate>
-</item>
-</channel>
-</rss>
-"`;
-
   const getRss = async (url) => {
     try {
       const response = await axios.get(url);
       console.log(response);
       const { title, description, posts } = parser(response.data);
-      // const { title, description, posts } = parser(temp22);
       const feedId = _.uniqueId('f');
       const feed = {
         title,
