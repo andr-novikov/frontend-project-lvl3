@@ -1,5 +1,6 @@
 // @ts-check
 
-import runApp from './init.js';
+import 'bootstrap';
+import app from './app.js';
 
-runApp();
+app();

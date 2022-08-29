@@ -3,10 +3,28 @@ export default {
     header: 'RSS агрегатор',
     paragraph: 'Начните читать RSS сегодня! Это легко, это красиво.',
     label: 'Ссылка RSS',
-    example: 'Пример: https://ru.hexlet.io/lessons.rss',
-    feedback: 'RSS успешно загружен', // а если нет? надо подумать над организацией ошибок
-    // RSS уже существует   Ресурс не содержит валидный RSS   Ссылка должна быть валидным URL
-    btn: 'Добавить',
+    example: 'Пример: https://httpbin.org/xml, https://ru.hexlet.io/lessons.rss, https://www.kommersant.ru/RSS/main.xml, http://www.ixbt.com/export/articles.rss',
+    btnSubmit: 'Добавить',
     lngBtn: 'en',
+    state: {
+      form: {
+        success: 'RSS успешно загружен',
+        error: {
+          invalidURL: 'Ссылка должна быть валидным URL',
+          notOneOf: 'RSS уже существует',
+          required: 'Не должно быть пустым',
+          network: 'Ошибка сети',
+          invalidRSS: 'Ресурс не содержит валидный RSS',
+          unknown: 'Неизвестная ошибка',
+        },
+      },
+    },
+    feeds: 'Фиды',
+    posts: 'Посты',
+    btnModal: 'Просмотр',
+    modal: {
+      readMore: 'Читать полностью',
+      close: 'Закрыть',
+    },
   },
 };
