@@ -58,10 +58,12 @@ export default async () => {
   render(elements, i18nInstance, state);
 
   const getRss = async (url) => {
+    const proxyUrl = new URL('get', 'https://allorigins.hexlet.app');
+    proxyUrl.searchParams.set('disableCache', 'true');
+    proxyUrl.searchParams.set('url', url);
     try {
-      const response = await axios.get(url);
-      console.log(response);
-      const { title, description, posts } = parser(response.data);
+      const response = await axios.get(proxyUrl);
+      const { title, description, posts } = parser(response.data.contents);
       const feedId = _.uniqueId('f');
       const feed = {
         title,
