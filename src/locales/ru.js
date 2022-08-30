@@ -3,7 +3,7 @@ export default {
     header: 'RSS агрегатор',
     paragraph: 'Начните читать RSS сегодня! Это легко, это красиво.',
     label: 'Ссылка RSS',
-    example: 'Пример: https://habr.com/ru/rss/best/weekly/?fl=ru, http://www.ixbt.com/export/articles.rss, https://ru.hexlet.io/lessons.rss',
+    example: 'Пример: https://habr.com/ru/rss/best/weekly, http://www.ixbt.com/export/articles.rss, https://ru.hexlet.io/lessons.rss',
     btnSubmit: 'Добавить',
     lngBtn: 'en',
     state: {

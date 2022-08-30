@@ -3,7 +3,7 @@ export default {
     header: 'RSS Aggregator',
     paragraph: "Start reading RSS today! It's easy, it's beautiful.",
     label: 'RSS Link',
-    example: 'Example: https://ru.hexlet.io/lessons.rss',
+    example: 'Example: https://www.gsmarena.com/rss-news-reviews.php3',
     btnSubmit: 'Add',
     lngBtn: 'ru',
     state: {
