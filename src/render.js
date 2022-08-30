@@ -45,7 +45,7 @@ const renderModal = (elements, i18nInstance, post) => {
   readMoreBtn.textContent = i18nInstance.t('modal.readMore');
   readMoreBtn.href = post.link;
   modalTitle.textContent = post.title;
-  modalBody.textContent = post.description;
+  modalBody.innerHTML = post.description;
 };
 
 const renderPosts = (elements, i18nInstance, posts) => {
