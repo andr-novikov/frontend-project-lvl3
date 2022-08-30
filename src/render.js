@@ -5,38 +5,32 @@ const handleProcessState = (elements, i18nInstance, processState) => {
     input, form, submitBtn, feedback,
   } = elements;
 
+  submitBtn.disabled = false;
+  input.disabled = false;
+  input.focus();
+
   switch (processState) {
     case 'success':
-      submitBtn.disabled = false;
-      form.reset();
       feedback.classList.add('text-success');
       feedback.classList.remove('text-danger');
       feedback.textContent = i18nInstance.t('state.form.success');
       break;
     case 'error':
-      submitBtn.disabled = false;
+      feedback.classList.remove('text-success');
+      feedback.classList.add('text-danger');
       break;
 
     case 'processing':
       submitBtn.disabled = true;
+      input.disabled = true;
       break;
 
     case 'filling':
-      submitBtn.disabled = false;
+      form.reset();
       break;
 
     default:
       throw new Error(`Unknown process state: ${processState}`);
-  }
-  input.focus();
-};
-
-const renderError = (elements, i18nInstance, error) => {
-  const { feedback } = elements;
-  if (error !== null) {
-    feedback.textContent = i18nInstance.t(`state.form.error.${error}`);
-    feedback.classList.remove('text-success');
-    feedback.classList.add('text-danger');
   }
 };
 
@@ -99,6 +93,17 @@ const renderPosts = (elements, i18nInstance, posts) => {
   postsEl.append(postsCard);
 };
 
+const renderVisitedPosts = (elements, visitedPosts) => {
+  const { postsEl } = elements;
+  const posts = postsEl.querySelectorAll('ul li a');
+  posts.forEach((post) => {
+    if (visitedPosts.includes(post.dataset.id)) {
+      post.classList.remove('fw-bold');
+      post.classList.add('fw-normal', 'text-muted');
+    }
+  });
+};
+
 const renderFeeds = (elements, i18nInstance, feeds) => {
   const { feedsEl } = elements;
   feedsEl.innerHTML = '';
@@ -159,18 +164,18 @@ export const render = (elements, i18nInstance, state) => {
   submitBtn.textContent = i18nInstance.t('btnSubmit');
   lngBtn.textContent = i18nInstance.t('lngBtn');
 
-  let text = '';
-  console.log(state);
-  if (state.form.processState === 'success') text = i18nInstance.t('state.form.success');
-  if (state.form.processState === 'error') text = i18nInstance.t(`state.form.error.${state.form.error}`);
-  feedback.textContent = text;
+  let feedbackText = '';
+  if (state.form.processState === 'success') feedbackText = i18nInstance.t('state.form.success');
+  if (state.form.processState === 'error') feedbackText = i18nInstance.t(`state.form.error.${state.form.error}`);
+  feedback.textContent = feedbackText;
   renderFeeds(elements, i18nInstance, state.data.feeds);
   renderPosts(elements, i18nInstance, state.data.posts);
+  renderVisitedPosts(elements, state.visitedPosts);
 };
 
 export const stateRender = (elements, i18nInstance, state) => (path, value) => {
-  // console.log('pathRender =', path);
-  // console.log('valueRender =', value);
+  const { feedback } = elements;
+
   switch (path) {
     case 'language':
       render(elements, i18nInstance, state);
@@ -179,7 +184,7 @@ export const stateRender = (elements, i18nInstance, state) => (path, value) => {
       handleProcessState(elements, i18nInstance, value);
       break;
     case 'form.error':
-      renderError(elements, i18nInstance, value);
+      feedback.textContent = value ? i18nInstance.t(`state.form.error.${value}`) : '';
       break;
     case 'form.valid':
       if (value) {
@@ -190,6 +195,7 @@ export const stateRender = (elements, i18nInstance, state) => (path, value) => {
       break;
     case 'data.posts':
       renderPosts(elements, i18nInstance, value);
+      renderVisitedPosts(elements, state.visitedPosts);
       break;
     case 'data.feeds':
       renderFeeds(elements, i18nInstance, value);
@@ -200,12 +206,7 @@ export const stateRender = (elements, i18nInstance, state) => (path, value) => {
       break;
     }
     case 'visitedPosts': {
-      value.forEach((postId) => {
-        const post = document.querySelector(`[data-id = ${postId}]`);
-        // post.classList.add('text-muted');
-        post.classList.remove('fw-bold');
-        post.classList.add('fw-normal');
-      });
+      renderVisitedPosts(elements, value);
       break;
     }
     default:

@@ -10,6 +10,7 @@ import validate from './validate.js';
 import parser from './parser.js';
 
 const defaultLanguage = 'ru';
+const monitoringInterval = 5000;
 
 export default async () => {
   const elements = {
@@ -34,13 +35,12 @@ export default async () => {
       processState: 'filling',
       // filling  processing  error  success
       error: null,
-      // error: null,
     },
     data: {
       feeds: [],
       // { id, url, title, description }
       posts: [],
-      // { id, feedId, pubDate, title, url }
+      // { id, feedId, pubDate, title, link }
     },
     modalPostId: null,
     visitedPosts: [],
@@ -55,31 +55,34 @@ export default async () => {
   });
 
   const watchedState = onChange(state, stateRender(elements, i18nInstance, state));
-  render(elements, i18nInstance, state);
 
-  const getRss = async (url) => {
+  const createProxyUrl = (url) => {
     const proxyUrl = new URL('get', 'https://allorigins.hexlet.app');
     proxyUrl.searchParams.set('disableCache', 'true');
     proxyUrl.searchParams.set('url', url);
+    return proxyUrl;
+  };
+
+  const getRss = async (url) => {
+    const proxyUrl = createProxyUrl(url);
     try {
       const response = await axios.get(proxyUrl);
       const { title, description, posts } = parser(response.data.contents);
+      watchedState.form.processState = 'success';
       const feedId = _.uniqueId('f');
-      const feed = {
+      watchedState.data.feeds.unshift({
         title,
         description,
         id: feedId,
         url,
-      };
-      const postsNew = posts.map((post) => ({
+      });
+      posts.forEach((post) => watchedState.data.posts.unshift({
         ...post,
         id: _.uniqueId('p'),
         feedId,
       }));
-      watchedState.data.feeds.unshift(feed);
-      watchedState.data.posts = [...postsNew, ...watchedState.data.posts]
-        .sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate));
-      watchedState.form.processState = 'success';
+      watchedState.data.posts.sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate));
+      watchedState.form.processState = 'filling';
     } catch (err) {
       console.error(err);
       let error = 'unknown';
@@ -90,14 +93,38 @@ export default async () => {
     }
   };
 
-  const changeLng = () => {
+  const feedsMonitoring = () => {
+    watchedState.data.feeds.forEach(async (feed) => {
+      const proxyUrl = createProxyUrl(feed.url);
+      try {
+        const response = await axios.get(proxyUrl);
+        const { posts } = parser(response.data.contents);
+        const postsNew = posts.map((post) => ({
+          ...post,
+          id: _.uniqueId('p'),
+          feedId: feed.id,
+        }));
+        const postsStateUrl = watchedState.data.posts
+          .filter((post) => post.feedId === feed.id)
+          .map((post) => post.link);
+        postsNew.forEach((post) => {
+          if (!postsStateUrl.includes(post.link)) {
+            watchedState.data.posts.unshift(post);
+          }
+        });
+      } catch (err) {
+        console.error(err);
+      }
+    });
+    setTimeout(feedsMonitoring, monitoringInterval);
+  };
+
+  const changeLngHandler = () => {
     const newLng = watchedState.language === 'ru' ? 'en' : 'ru';
     i18nInstance.changeLanguage(newLng).then(watchedState.language = newLng);
   };
 
-  elements.lngBtn.addEventListener('click', changeLng);
-
-  elements.form.addEventListener('submit', async (e) => {
+  const submitHandler = async (e) => {
     e.preventDefault();
     const formData = new FormData(e.target);
     const url = formData.get('url');
@@ -110,26 +137,24 @@ export default async () => {
       watchedState.form.error = null;
       getRss(url);
     } catch (err) {
-      console.dir(err);
       watchedState.form.valid = false;
       watchedState.form.processState = 'error';
       watchedState.form.error = err.message;
     }
-  });
+  };
 
-  elements.form.addEventListener('input', () => {
-    watchedState.form.processState = 'filling';
-  });
-
-  elements.feedsEl.addEventListener('click', (e) => {
+  const feedHandler = (e) => {
     const { feedId } = e.target.dataset;
     if (e.target.tagName === 'BTN') {
       watchedState.data.feeds = watchedState.data.feeds.filter((feed) => feed.id !== feedId);
       watchedState.data.posts = watchedState.data.posts.filter((post) => post.feedId !== feedId);
+      const postsId = watchedState.data.posts.map((post) => post.id);
+      watchedState.visitedPosts = watchedState.visitedPosts
+        .filter((post) => postsId.includes(post));
     }
-  });
+  };
 
-  elements.postsEl.addEventListener('click', (e) => {
+  const postHandler = (e) => {
     const postId = e.target.dataset.id;
     if (e.target.tagName === 'BUTTON') {
       watchedState.modalPostId = postId;
@@ -137,5 +162,13 @@ export default async () => {
     if (!watchedState.visitedPosts.includes(postId)) {
       watchedState.visitedPosts.push(postId);
     }
-  });
+  };
+
+  elements.lngBtn.addEventListener('click', changeLngHandler);
+  elements.form.addEventListener('submit', submitHandler);
+  elements.feedsEl.addEventListener('click', (feedHandler));
+  elements.postsEl.addEventListener('click', postHandler);
+
+  render(elements, i18nInstance, state);
+  feedsMonitoring();
 };
