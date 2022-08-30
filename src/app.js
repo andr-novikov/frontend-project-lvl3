@@ -44,6 +44,7 @@ export default async () => {
     },
     modalPostId: null,
     visitedPosts: [],
+    activeFeedId: null,
     // id
   };
 
@@ -145,18 +146,20 @@ export default async () => {
 
   const feedHandler = (e) => {
     const { feedId } = e.target.dataset;
-    if (e.target.tagName === 'BTN') {
+    if (e.target.type === 'button') {
       watchedState.data.feeds = watchedState.data.feeds.filter((feed) => feed.id !== feedId);
       watchedState.data.posts = watchedState.data.posts.filter((post) => post.feedId !== feedId);
       const postsId = watchedState.data.posts.map((post) => post.id);
       watchedState.visitedPosts = watchedState.visitedPosts
         .filter((post) => postsId.includes(post));
+    } else {
+      watchedState.activeFeedId = watchedState.activeFeedId !== feedId ? feedId : null;
     }
   };
 
   const postHandler = (e) => {
     const postId = e.target.dataset.id;
-    if (e.target.tagName === 'BUTTON') {
+    if (e.target.type === 'button') {
       watchedState.modalPostId = postId;
     }
     if (!watchedState.visitedPosts.includes(postId)) {

@@ -126,24 +126,39 @@ const renderFeeds = (elements, i18nInstance, feeds) => {
   feeds.forEach((feed) => {
     const feedItem = document.createElement('li');
     feedItem.classList.add('list-group-item', 'list-group-item-action', 'py-3', 'border-0');
+    feedItem.setAttribute('data-feed-id', feed.id);
 
+    const feedElGroup = document.createElement('div');
+    feedElGroup.classList.add('pe-none');
     const feedTitle = document.createElement('h3');
     feedTitle.classList.add('h6', 'm-0');
     feedTitle.textContent = feed.title;
     const feedDescription = document.createElement('p');
     feedDescription.classList.add('small', 'm-0');
     feedDescription.textContent = feed.description;
-    const btnClose = document.createElement('btn');
+    const btnClose = document.createElement('button');
     btnClose.classList.add('btn-close', 'ms-auto', 'd-block');
     btnClose.setAttribute('type', 'button');
     btnClose.setAttribute('aria-label', 'Close');
     btnClose.setAttribute('data-feed-id', feed.id);
-    feedItem.append(btnClose, feedTitle, feedDescription);
+    feedElGroup.append(feedTitle, feedDescription);
+    feedItem.append(btnClose, feedElGroup);
     feedsList.append(feedItem);
   });
 
   feedsCard.append(cardBody, feedsList);
   feedsEl.append(feedsCard);
+};
+
+const renderActiveFeed = (elements, activeFeedId) => {
+  const feeds = elements.feedsEl.querySelectorAll('li[data-feed-id]');
+  feeds.forEach((feed) => {
+    if (feed.dataset.feedId === activeFeedId) {
+      feed.classList.add('active');
+    } else {
+      feed.classList.remove('active');
+    }
+  });
 };
 
 export const render = (elements, i18nInstance, state) => {
@@ -169,7 +184,12 @@ export const render = (elements, i18nInstance, state) => {
   if (state.form.processState === 'error') feedbackText = i18nInstance.t(`state.form.error.${state.form.error}`);
   feedback.textContent = feedbackText;
   renderFeeds(elements, i18nInstance, state.data.feeds);
-  renderPosts(elements, i18nInstance, state.data.posts);
+  let posts = [...state.data.posts];
+  if (state.activeFeedId !== null) {
+    renderActiveFeed(elements, state.activeFeedId);
+    posts = posts.filter((post) => post.feedId === state.activeFeedId);
+  }
+  renderPosts(elements, i18nInstance, posts);
   renderVisitedPosts(elements, state.visitedPosts);
 };
 
@@ -200,15 +220,21 @@ export const stateRender = (elements, i18nInstance, state) => (path, value) => {
     case 'data.feeds':
       renderFeeds(elements, i18nInstance, value);
       break;
-    case 'modalPostId': {
-      const post = state.data.posts.find((el) => el.id === value);
-      renderModal(elements, i18nInstance, post);
+    case 'modalPostId':
+      renderModal(elements, i18nInstance, state.data.posts.find((post) => post.id === value));
       break;
-    }
-    case 'visitedPosts': {
+    case 'visitedPosts':
       renderVisitedPosts(elements, value);
       break;
+    case 'activeFeedId': {
+      renderActiveFeed(elements, value);
+      const postsByFeed = value
+        ? state.data.posts.filter((post) => post.feedId === value)
+        : state.data.posts;
+      renderPosts(elements, i18nInstance, postsByFeed);
+      renderVisitedPosts(elements, state.visitedPosts);
     }
+      break;
     default:
       break;
   }
