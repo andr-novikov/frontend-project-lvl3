@@ -216,15 +216,18 @@ export const stateRender = (elements, i18nInstance, state) => (path, value) => {
     case 'data.posts':
       renderPosts(elements, i18nInstance, value);
       renderVisitedPosts(elements, state.visitedPosts);
+      localStorage.setItem('posts', JSON.stringify(value));
       break;
     case 'data.feeds':
       renderFeeds(elements, i18nInstance, value);
+      localStorage.setItem('feeds', JSON.stringify(value));
       break;
     case 'modalPostId':
       renderModal(elements, i18nInstance, state.data.posts.find((post) => post.id === value));
       break;
     case 'visitedPosts':
       renderVisitedPosts(elements, value);
+      localStorage.setItem('visitedPosts', JSON.stringify(value));
       break;
     case 'activeFeedId': {
       renderActiveFeed(elements, value);
