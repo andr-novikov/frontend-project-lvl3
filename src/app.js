@@ -3,7 +3,6 @@
 import i18next from 'i18next';
 import onChange from 'on-change';
 import axios from 'axios';
-import _ from 'lodash';
 import resources from './locales/index.js';
 import { render, stateRender } from './render.js';
 import validate from './validate.js';
@@ -27,7 +26,7 @@ const getRss = async (watchedState, url) => {
     const response = await axios.get(proxyUrl);
     const { title, description, posts } = parser(response.data.contents);
     watchedState.form.processState = 'success';
-    const feedId = _.uniqueId('f');
+    const feedId = `f_${Date.now()}`;
     watchedState.data.feeds.unshift({
       title,
       description,
@@ -36,7 +35,7 @@ const getRss = async (watchedState, url) => {
     });
     posts.forEach((post) => watchedState.data.posts.unshift({
       ...post,
-      id: _.uniqueId('p'),
+      id: `p_${Date.now()}`,
       feedId,
     }));
     watchedState.data.posts.sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate));
@@ -57,17 +56,16 @@ const feedsMonitoring = (watchedState) => {
     try {
       const response = await axios.get(proxyUrl);
       const { posts } = parser(response.data.contents);
-      const postsNew = posts.map((post) => ({
-        ...post,
-        id: _.uniqueId('p'),
-        feedId: feed.id,
-      }));
       const postsStateUrl = watchedState.data.posts
         .filter((post) => post.feedId === feed.id)
         .map((post) => post.link);
-      postsNew.forEach((post) => {
+      posts.forEach((post) => {
         if (!postsStateUrl.includes(post.link)) {
-          watchedState.data.posts.unshift(post);
+          watchedState.data.posts.unshift({
+            ...post,
+            id: `p_${Date.now()}`,
+            feedId: feed.id,
+          });
         }
       });
     } catch (err) {
