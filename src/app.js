@@ -74,7 +74,7 @@ const feedsMonitoring = (watchedState) => {
       console.error(err);
     }
   });
-  setTimeout(feedsMonitoring, monitoringInterval);
+  setTimeout(() => feedsMonitoring(watchedState), monitoringInterval);
 };
 
 const changeLngHandler = (i18nInstance, watchedState) => () => {
